@@ -1,10 +1,10 @@
-const CACHE_NAME = 'klauslog-v1';
+const CACHE_NAME = 'klauslog-v2';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './icon-192.png',
-  './icon-512.png'
+  './klauslog-icon-192.png',
+  './klauslog-icon-512.png'
 ];
 
 self.addEventListener('install', e => {
