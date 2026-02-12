@@ -8,7 +8,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Klauslog">
 <link rel="manifest" href="klauslog-manifest.json">
-<link rel="apple-touch-icon" href="klauslog-icon-192.png">
+<link rel="apple-touch-icon" href="klauslog-icon-192.png?v=1">
+<link rel="icon" type="image/png" sizes="192x192" href="klauslog-icon-192.png?v=1">
+<link rel="icon" type="image/png" sizes="512x512" href="klauslog-icon-512.png?v=1">
 <title>Klauslog</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -529,6 +531,18 @@ render();
 
 })();
 </script>
-<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('klauslog-sw.js').catch(function(){});}</script>
+<script>
+if('serviceWorker' in navigator){
+  // Clean up any foreign/old service workers first, then register ours
+  navigator.serviceWorker.getRegistrations().then(function(regs){
+    var dominated=regs.filter(function(r){return r.active&&r.active.scriptURL.indexOf('klauslog-sw.js')===-1;});
+    Promise.all(dominated.map(function(r){return r.unregister();})).then(function(){
+      // Also purge any old caches that aren't ours
+      if(window.caches){caches.keys().then(function(keys){keys.forEach(function(k){if(k.indexOf('klauslog')===- 1)caches.delete(k);});});}
+      navigator.serviceWorker.register('klauslog-sw.js');
+    });
+  });
+}
+</script>
 </body>
 </html>
